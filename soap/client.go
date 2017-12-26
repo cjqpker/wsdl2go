@@ -111,6 +111,7 @@ func doRoundTrip(c *Client, setHeaders func(*http.Request), in, out Message) err
 	if cli == nil {
 		cli = http.DefaultClient
 	}
+
 	r, err := http.NewRequest("POST", c.URL, &b)
 	if err != nil {
 		return err
@@ -123,6 +124,7 @@ func doRoundTrip(c *Client, setHeaders func(*http.Request), in, out Message) err
 	if err != nil {
 		return err
 	}
+
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		// read only the first Mb of the body in error case
@@ -130,6 +132,7 @@ func doRoundTrip(c *Client, setHeaders func(*http.Request), in, out Message) err
 		body, _ := ioutil.ReadAll(limReader)
 		return fmt.Errorf("%q: %q", resp.Status, body)
 	}
+
 	return xml.NewDecoder(resp.Body).Decode(out)
 }
 
@@ -151,7 +154,9 @@ func (c *Client) RoundTrip(in, out Message) error {
 			} else {
 				actionName = fmt.Sprintf("%s/%s", c.Namespace, soapAction)
 			}
-			r.Header.Add("SOAPAction", actionName)
+			if false {
+				r.Header.Add("SOAPAction", actionName)
+			}
 		}
 	}
 	return doRoundTrip(c, headerFunc, in, out)
@@ -172,7 +177,9 @@ func (c *Client) RoundTripWithAction(soapAction string, in, out Message) error {
 			} else {
 				actionName = fmt.Sprintf("%s/%s", c.Namespace, soapAction)
 			}
-			r.Header.Add("SOAPAction", actionName)
+			if false {
+				r.Header.Add("SOAPAction", actionName)
+			}
 		}
 	}
 	return doRoundTrip(c, headerFunc, in, out)
